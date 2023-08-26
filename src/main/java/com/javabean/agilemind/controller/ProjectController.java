@@ -11,11 +11,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("projects")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ProjectController {
     private ProjectService projectService;
 
     public ProjectController(ProjectService projectService) {
         this.projectService = projectService;
+    }
+
+    @GetMapping(path = "/test")
+    public String test(){
+        return "WTH";
     }
 
     @GetMapping(path = "", produces = "application/json")

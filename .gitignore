@@ -32,5 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 
-
+### the ClientID and Secret are here. Must move to more secure spot in the future ###
 application.yml
+
+**/.DS_Store
+.DS_Store
+

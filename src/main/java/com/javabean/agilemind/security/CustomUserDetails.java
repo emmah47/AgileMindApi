@@ -1,4 +1,4 @@
-package com.javabean.agilemind.domain;
+package com.javabean.agilemind.security;
 
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;

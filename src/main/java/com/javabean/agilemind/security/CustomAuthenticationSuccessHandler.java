@@ -1,6 +1,5 @@
-package com.javabean.agilemind.configurations;
+package com.javabean.agilemind.security;
 
-import com.javabean.agilemind.security.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -12,12 +11,21 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 
-@RequiredArgsConstructor
+
 @Component
 public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    private TokenProvider tokenProvider;
 
-    private final String redirectUri = "http://localhost:3000/callback";
+    private final TokenProvider tokenProvider;
+
+
+    private String redirectUri;
+
+
+    public CustomAuthenticationSuccessHandler( TokenProvider tokenProvider,@Value("${app.oauth2.redirectUri}") String redirectUri) {
+        super();
+        this.tokenProvider = tokenProvider;
+        this.redirectUri = redirectUri;
+    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {

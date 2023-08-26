@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class TokenProvider {
+public class TokenProviderImpl implements TokenProvider {
 
 
     private String jwtSecret;
@@ -26,7 +26,7 @@ public class TokenProvider {
 
     private Long jwtExpirationMinutes;
 
-    public TokenProvider(@Value("${app.jwt.secret}") String jwtSecret,  @Value("${app.jwt.expiration.minutes}") Long jwtExpirationMinutes) {
+    public TokenProviderImpl(@Value("${app.jwt.secret}") String jwtSecret,  @Value("${app.jwt.expiration.minutes}") Long jwtExpirationMinutes) {
         this.jwtSecret = jwtSecret;
         this.jwtExpirationMinutes = jwtExpirationMinutes;
     }
