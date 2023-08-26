@@ -1,6 +1,7 @@
 package com.javabean.agilemind.controller;
 
 import com.javabean.agilemind.domain.Project;
+import com.javabean.agilemind.security.CustomUserDetails;
 import com.javabean.agilemind.service.ProjectService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -11,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("projects")
-@CrossOrigin(origins = "http://localhost:3000")
 public class ProjectController {
     private ProjectService projectService;
 
@@ -27,7 +27,7 @@ public class ProjectController {
     }
 
     private static String getLogin(OAuth2User principal) {
-        return principal.getAttribute("login");
+        return ((CustomUserDetails) principal).getUsername();
     }
 
     @PostMapping("")

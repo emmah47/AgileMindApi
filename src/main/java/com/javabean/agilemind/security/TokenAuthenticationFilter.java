@@ -1,5 +1,6 @@
 package com.javabean.agilemind.security;
 
+import com.javabean.agilemind.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +27,7 @@ import java.util.Optional;
 @Component
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
-//    private final UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
     private final TokenProvider tokenProvider;
 
     @Override
@@ -36,12 +37,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                     .flatMap(tokenProvider::validateTokenAndGetJws)
                     .ifPresent(jws -> {
                         String username = jws.getBody().getSubject();
-                        UserDetails userDetails = CustomUserDetails.builder()
-                                .name(jws.getBody().getSubject())
-                                .authorities(Collections.singletonList(new SimpleGrantedAuthority("USER")))
-                                .attributes(new HashMap<>())
-                                .username(jws.getBody().get("preferred_username").toString())
-                                .build();
+                        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authentication);
