@@ -1,14 +1,17 @@
 package com.javabean.agilemind.security;
 
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Collection;
 import java.util.Map;
 
 @Data
+@Builder
 public class CustomUserDetails implements OAuth2User, UserDetails {
 
     private Long id;

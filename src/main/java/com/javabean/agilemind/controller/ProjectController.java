@@ -19,10 +19,6 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
-    @GetMapping(path = "/test")
-    public String test(){
-        return "WTH";
-    }
 
     @GetMapping(path = "", produces = "application/json")
     public List<Project> getProjects(@AuthenticationPrincipal OAuth2User principal) {

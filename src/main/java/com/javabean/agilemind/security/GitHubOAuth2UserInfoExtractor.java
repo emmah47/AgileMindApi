@@ -12,13 +12,13 @@ public class GitHubOAuth2UserInfoExtractor implements OAuth2UserInfoExtractor {
 
     @Override
     public CustomUserDetails extractUserInfo(OAuth2User oAuth2User) {
-        CustomUserDetails customUserDetails = new CustomUserDetails();
-        customUserDetails.setUsername(retrieveAttr("login", oAuth2User));
-        customUserDetails.setName(retrieveAttr("name", oAuth2User));
-        customUserDetails.setEmail(retrieveAttr("email", oAuth2User));
-        customUserDetails.setAvatarUrl(retrieveAttr("avatar_url", oAuth2User));
-        customUserDetails.setAttributes(oAuth2User.getAttributes());
-        customUserDetails.setAuthorities(Collections.singletonList(new SimpleGrantedAuthority("USER")));
+        CustomUserDetails customUserDetails = CustomUserDetails.builder()
+                .username(retrieveAttr("login", oAuth2User))
+                .name(retrieveAttr("name", oAuth2User))
+                .email(retrieveAttr("email", oAuth2User))
+                .avatarUrl(retrieveAttr("avatar_url", oAuth2User))
+                .attributes(oAuth2User.getAttributes())
+                .authorities(Collections.singletonList(new SimpleGrantedAuthority("USER"))).build();
         return customUserDetails;
     }
 
