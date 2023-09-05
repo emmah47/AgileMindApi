@@ -7,18 +7,17 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-
 @Data
-@Document("project")
-public class Project {
+@Document("userStories")
+public class UserStory {
     @Id
     @JsonSerialize(using= ToStringSerializer.class)
     private ObjectId id;
 
-    private String name;
+    private String projectId;
+    private String title;
     private String description;
-    private String owner;
-    private List<String> collaborators;
-
+    private UserStoryStatus status;
+    private int points; // story points, must be in fibonacci
+    private String assignedUserId;
 }

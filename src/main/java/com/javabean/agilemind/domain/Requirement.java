@@ -7,18 +7,14 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-
 @Data
-@Document("project")
-public class Project {
+@Document("requirement")
+public class Requirement {
     @Id
     @JsonSerialize(using= ToStringSerializer.class)
     private ObjectId id;
 
-    private String name;
-    private String description;
-    private String owner;
-    private List<String> collaborators;
-
+    private String content;
+    private String userId;
+    private String projectId;
 }

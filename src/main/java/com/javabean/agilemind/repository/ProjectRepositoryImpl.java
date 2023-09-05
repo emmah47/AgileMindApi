@@ -1,6 +1,8 @@
 package com.javabean.agilemind.repository;
 
 import com.javabean.agilemind.domain.Project;
+import com.javabean.agilemind.domain.Requirement;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -25,5 +27,11 @@ public class ProjectRepositoryImpl implements ProjectRepository{
     @Override
     public Project saveProject(Project project) {
         return mongoOperations.save(project);
+    }
+
+    @Override
+    public List<Requirement> getRequirements(String projectId) {
+        Query query = new Query(Criteria.where("projectId").is(new ObjectId(projectId)));
+        return mongoOperations.find(query, Requirement.class);
     }
 }
