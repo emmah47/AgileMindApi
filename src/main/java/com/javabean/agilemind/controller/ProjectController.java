@@ -2,7 +2,7 @@ package com.javabean.agilemind.controller;
 
 import com.javabean.agilemind.domain.*;
 import com.javabean.agilemind.exceptions.InvalidRequirementsException;
-import com.javabean.agilemind.exceptions.PermissionDeniedException;
+import com.javabean.agilemind.exceptions.AccessDeniedException;
 import com.javabean.agilemind.security.CustomUserDetails;
 import com.javabean.agilemind.service.ProjectService;
 import org.bson.types.ObjectId;
@@ -48,22 +48,14 @@ public class ProjectController {
     }
 
     @DeleteMapping("{projectId}/requirements/{requirementId}/delete")
-    public Requirement deleteRequirements(@PathVariable String projectId, @PathVariable String requirementId, @AuthenticationPrincipal OAuth2User principal) {
-        return projectService.deleteRequirement(new ObjectId(projectId), new ObjectId(requirementId), getUserObjectId(principal));
+    public void deleteRequirements(@PathVariable String projectId, @PathVariable String requirementId, @AuthenticationPrincipal OAuth2User principal) throws AccessDeniedException {
+        projectService.deleteRequirement(new ObjectId(projectId), new ObjectId(requirementId), getUserObjectId(principal));
     }
 
     @GetMapping("{projectId}/user-stories/generate")
-    public List<UserStory> generateUserStoriesFromRequirements(@PathVariable String projectId, @AuthenticationPrincipal OAuth2User principal) {
-
-        try {
-            List<UserStory> userStories =  projectService.generateUserStoriesFromRequirements(new ObjectId(projectId), getUserObjectId(principal));
-            return userStories;
-        } catch (PermissionDeniedException e) {
-            //TODO
-        } catch (InvalidRequirementsException e) {
-            //TODO
-        }
-        return null; // TODO: all returns should be inside catch blocks, after implementing those, delete this line
+    public List<UserStory> generateUserStoriesFromRequirements(@PathVariable String projectId, @AuthenticationPrincipal OAuth2User principal) throws AccessDeniedException, InvalidRequirementsException {
+        List<UserStory> userStories =  projectService.generateUserStoriesFromRequirements(new ObjectId(projectId), getUserObjectId(principal));
+        return userStories;
     }
 
 }

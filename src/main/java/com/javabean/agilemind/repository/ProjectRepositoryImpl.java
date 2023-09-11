@@ -25,6 +25,11 @@ public class ProjectRepositoryImpl implements ProjectRepository{
     }
 
     @Override
+    public Project getProject(ObjectId projectId) {
+        return mongoOperations.findById(projectId, Project.class);
+    }
+
+    @Override
     public Project saveProject(Project project) {
         return mongoOperations.save(project);
     }
@@ -36,12 +41,18 @@ public class ProjectRepositoryImpl implements ProjectRepository{
     }
 
     @Override
-    public Requirement saveRequirement(Requirement requirement) {
-        return mongoOperations.save(requirement);
+    public Requirement getRequirement(ObjectId requirementId) {
+        return mongoOperations.findById(requirementId, Requirement.class);
     }
 
     @Override
-    public Project getProject(ObjectId projectId) {
-        return mongoOperations.findById(projectId, Project.class);
+    public void deleteRequirement(ObjectId requirementId) {
+        Query query = new Query(Criteria.where("_id").is(requirementId));
+        mongoOperations.remove(query, Requirement.class);
+    }
+
+    @Override
+    public Requirement saveRequirement(Requirement requirement) {
+        return mongoOperations.save(requirement);
     }
 }

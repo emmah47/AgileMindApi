@@ -4,7 +4,7 @@ import com.javabean.agilemind.domain.Project;
 import com.javabean.agilemind.domain.Requirement;
 import com.javabean.agilemind.domain.UserStory;
 import com.javabean.agilemind.exceptions.InvalidRequirementsException;
-import com.javabean.agilemind.exceptions.PermissionDeniedException;
+import com.javabean.agilemind.exceptions.AccessDeniedException;
 import org.bson.types.ObjectId;
 
 import java.util.List;
@@ -19,7 +19,9 @@ public interface ProjectService {
 
     Requirement saveRequirement(Requirement requirement, ObjectId userId, ObjectId projectId);
 
-    Requirement deleteRequirement(ObjectId requirementId, ObjectId projectId, ObjectId userId);
+    void deleteRequirement(ObjectId requirementId, ObjectId projectId, ObjectId userId) throws AccessDeniedException;
 
-    List<UserStory> generateUserStoriesFromRequirements(ObjectId projectId, ObjectId userId) throws PermissionDeniedException, InvalidRequirementsException;
+    List<UserStory> generateUserStoriesFromRequirements(ObjectId projectId, ObjectId userId) throws AccessDeniedException, InvalidRequirementsException;
+
+    Requirement getRequirement(ObjectId requirementId);
 }

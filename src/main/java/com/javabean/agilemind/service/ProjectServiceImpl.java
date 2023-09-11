@@ -4,7 +4,7 @@ import com.javabean.agilemind.domain.Project;
 import com.javabean.agilemind.domain.Requirement;
 import com.javabean.agilemind.domain.UserStory;
 import com.javabean.agilemind.exceptions.InvalidRequirementsException;
-import com.javabean.agilemind.exceptions.PermissionDeniedException;
+import com.javabean.agilemind.exceptions.AccessDeniedException;
 import com.javabean.agilemind.repository.ProjectRepository;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -39,6 +39,11 @@ public class ProjectServiceImpl implements  ProjectService {
     }
 
     @Override
+    public Requirement getRequirement(ObjectId requirementId) {
+        return projectRepository.getRequirement(requirementId);
+    }
+
+    @Override
     public Requirement saveRequirement(Requirement requirement, ObjectId userId, ObjectId projectId) {
         requirement.setUserId(userId);
         requirement.setProjectId(projectId);
@@ -46,13 +51,21 @@ public class ProjectServiceImpl implements  ProjectService {
     }
 
     @Override
-    public Requirement deleteRequirement(ObjectId requirementId, ObjectId projectId, ObjectId userId) {
-        // TODO
-        return null;
+    public void deleteRequirement(ObjectId requirementId, ObjectId projectId, ObjectId userId) throws AccessDeniedException {
+        try {
+            Requirement requirement = this.getRequirement(requirementId);
+            if (!requirement.getUserId().equals(userId)) {
+                throw new AccessDeniedException();
+            }
+        } catch (AccessDeniedException e) {
+            checkPermission(userId, projectId);
+        }
+
+        projectRepository.deleteRequirement(requirementId);
     }
 
     @Override
-    public List<UserStory> generateUserStoriesFromRequirements(ObjectId projectId, ObjectId userId) throws PermissionDeniedException, InvalidRequirementsException {
+    public List<UserStory> generateUserStoriesFromRequirements(ObjectId projectId, ObjectId userId) throws AccessDeniedException, InvalidRequirementsException {
         this.checkPermission(userId, projectId);
 
         // making sure requirements are not empty
@@ -69,10 +82,10 @@ public class ProjectServiceImpl implements  ProjectService {
         return userStories;
     }
 
-    private void checkPermission(ObjectId userId, ObjectId projectId) throws PermissionDeniedException {
+    private void checkPermission(ObjectId userId, ObjectId projectId) throws AccessDeniedException {
         Project project = projectRepository.getProject(projectId);
         if (!userId.equals(project.getOwnerId())) {
-            throw new PermissionDeniedException();
+            throw new AccessDeniedException();
         }
     }
 }

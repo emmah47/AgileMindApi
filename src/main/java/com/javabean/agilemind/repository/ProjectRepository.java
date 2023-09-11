@@ -16,4 +16,8 @@ public interface ProjectRepository {
     Project getProject(ObjectId projectId);
 
     Requirement saveRequirement(Requirement requirement);
+
+    Requirement getRequirement(ObjectId requirementId);
+
+    void deleteRequirement(ObjectId requirementId);
 }
