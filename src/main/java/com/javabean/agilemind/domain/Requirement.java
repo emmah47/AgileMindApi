@@ -15,6 +15,6 @@ public class Requirement {
     private ObjectId id;
 
     private String content;
-    private String userId;
-    private String projectId;
+    private ObjectId userId;
+    private ObjectId projectId;
 }

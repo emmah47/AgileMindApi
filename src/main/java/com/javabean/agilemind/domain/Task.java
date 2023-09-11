@@ -14,7 +14,7 @@ public class Task {
     @JsonSerialize(using= ToStringSerializer.class)
     private ObjectId id;
 
-    private String userStoryId;
+    private ObjectId userStoryId;
     private String content;
     private Boolean completed;
 }

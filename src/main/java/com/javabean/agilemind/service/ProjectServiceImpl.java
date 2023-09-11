@@ -6,9 +6,9 @@ import com.javabean.agilemind.domain.UserStory;
 import com.javabean.agilemind.exceptions.InvalidRequirementsException;
 import com.javabean.agilemind.exceptions.PermissionDeniedException;
 import com.javabean.agilemind.repository.ProjectRepository;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -22,36 +22,37 @@ public class ProjectServiceImpl implements  ProjectService {
     }
 
     @Override
-    public List<Project> getProjects(String login) {
-        List<Project> projects = this.projectRepository.getProjects(login);
+    public List<Project> getProjects(ObjectId userId) {
+        List<Project> projects = this.projectRepository.getProjects(userId);
         return projects;
     }
 
     @Override
-    public Project saveProject(Project project, String login) {
-        project.setOwner(login);
+    public Project saveProject(Project project, ObjectId userId) {
+        project.setOwnerId(userId);
         return projectRepository.saveProject(project);
     }
 
     @Override
-    public List<Requirement> getRequirements(String projectId) {
+    public List<Requirement> getRequirements(ObjectId projectId) {
         return projectRepository.getRequirements(projectId);
     }
 
     @Override
-    public Requirement saveRequirement(Requirement requirement, String userId, String projectId) {
+    public Requirement saveRequirement(Requirement requirement, ObjectId userId, ObjectId projectId) {
+        requirement.setUserId(userId);
+        requirement.setProjectId(projectId);
+        return projectRepository.saveRequirement(requirement);
+    }
+
+    @Override
+    public Requirement deleteRequirement(ObjectId requirementId, ObjectId projectId, ObjectId userId) {
         // TODO
         return null;
     }
 
     @Override
-    public Requirement deleteRequirement(String requirementId, String projectId, String userId) {
-        // TODO
-        return null;
-    }
-
-    @Override
-    public List<UserStory> generateUserStoriesFromRequirements(String projectId, String userId) throws PermissionDeniedException, InvalidRequirementsException {
+    public List<UserStory> generateUserStoriesFromRequirements(ObjectId projectId, ObjectId userId) throws PermissionDeniedException, InvalidRequirementsException {
         this.checkPermission(userId, projectId);
 
         // making sure requirements are not empty
@@ -68,7 +69,10 @@ public class ProjectServiceImpl implements  ProjectService {
         return userStories;
     }
 
-    private void checkPermission(String userId, String projectId) throws PermissionDeniedException {
-        // TODO
+    private void checkPermission(ObjectId userId, ObjectId projectId) throws PermissionDeniedException {
+        Project project = projectRepository.getProject(projectId);
+        if (!userId.equals(project.getOwnerId())) {
+            throw new PermissionDeniedException();
+        }
     }
 }

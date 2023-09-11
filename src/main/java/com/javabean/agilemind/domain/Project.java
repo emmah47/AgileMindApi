@@ -18,7 +18,7 @@ public class Project {
 
     private String name;
     private String description;
-    private String owner;
-    private List<String> collaborators;
+    private ObjectId ownerId;
+    private List<ObjectId> collaboratorIds;
 
 }

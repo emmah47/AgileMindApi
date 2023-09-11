@@ -14,10 +14,10 @@ public class UserStory {
     @JsonSerialize(using= ToStringSerializer.class)
     private ObjectId id;
 
-    private String projectId;
+    private ObjectId projectId;
     private String title;
     private String description;
     private UserStoryStatus status;
     private int points; // story points, must be in fibonacci
-    private String assignedUserId;
+    private ObjectId assignedUserId;
 }

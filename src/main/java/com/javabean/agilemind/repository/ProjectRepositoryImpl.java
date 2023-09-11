@@ -19,8 +19,8 @@ public class ProjectRepositoryImpl implements ProjectRepository{
     }
 
     @Override
-    public List<Project> getProjects(String login) {
-        Query query = new Query(Criteria.where("owner").is(login));
+    public List<Project> getProjects(ObjectId userId) {
+        Query query = new Query(Criteria.where("owner").is(userId));
         return mongoOperations.find(query, Project.class);
     }
 
@@ -30,8 +30,18 @@ public class ProjectRepositoryImpl implements ProjectRepository{
     }
 
     @Override
-    public List<Requirement> getRequirements(String projectId) {
-        Query query = new Query(Criteria.where("projectId").is(new ObjectId(projectId)));
+    public List<Requirement> getRequirements(ObjectId projectId) {
+        Query query = new Query(Criteria.where("projectId").is(projectId));
         return mongoOperations.find(query, Requirement.class);
+    }
+
+    @Override
+    public Requirement saveRequirement(Requirement requirement) {
+        return mongoOperations.save(requirement);
+    }
+
+    @Override
+    public Project getProject(ObjectId projectId) {
+        return mongoOperations.findById(projectId, Project.class);
     }
 }
