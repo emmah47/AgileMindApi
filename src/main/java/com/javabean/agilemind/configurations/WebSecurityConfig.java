@@ -30,7 +30,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers("/public/**", "/auth/**", "/oauth2/**").permitAll()
+                        .requestMatchers("/public/**", "/auth/**", "/oauth2/**", "/chat").permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2Login -> oauth2Login
 //                        .userInfoEndpoint(userInfo -> userInfo
