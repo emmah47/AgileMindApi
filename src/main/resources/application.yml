@@ -1,0 +1,27 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: ${CLIENT_ID}
+            clientSecret: ${CLIENT_SECRET}
+            scope: read:user, user:email
+mongodb:
+  url: mongodb://localhost:27017
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration:
+      minutes: 100000000
+  cors:
+    allowed-origins: http://localhost:5173
+  oauth2:
+    redirectUri: http://localhost:5173/oauth2/redirect
+  openai:
+    api-secret: ${OPENAI_API_SECRET}
+    model: gpt-3.5-turbo
+    url: https://api.openai.com/v1/chat/completions
+logging:
+  level:
+    org.springframework.security: DEBUG
