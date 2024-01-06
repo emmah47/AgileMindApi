@@ -1,26 +1,34 @@
 package com.javabean.agilemind.repository;
 
 import com.javabean.agilemind.domain.Project;
+import com.javabean.agilemind.domain.ProjectStatus;
 import com.javabean.agilemind.domain.Requirement;
+import com.javabean.agilemind.dto.ProjectCounts;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+
 @Repository
 public class ProjectRepositoryImpl implements ProjectRepository{
     private MongoOperations mongoOperations;
+    private MongoTemplate mongoTemplate;
 
-    public ProjectRepositoryImpl(MongoOperations mongoOperations) {
+    public ProjectRepositoryImpl(MongoOperations mongoOperations, MongoTemplate mongoTemplate) {
         this.mongoOperations = mongoOperations;
+        this.mongoTemplate = mongoTemplate;
     }
 
     @Override
     public List<Project> getProjects(ObjectId userId) {
-        Query query = new Query(Criteria.where("owner").is(userId));
+        Query query = new Query(where("owner").is(userId));
         return mongoOperations.find(query, Project.class);
     }
 
@@ -35,8 +43,35 @@ public class ProjectRepositoryImpl implements ProjectRepository{
     }
 
     @Override
+    public ProjectCounts getProjectCounts(ObjectId userId) {
+        TypedAggregation<Project> aggregation = newAggregation(Project.class,
+                match(where("owner").is(userId)),
+                group("status").count().as("count"),
+                group()
+                  .sum("count").as("total")
+                        .sum(
+                                ConditionalOperators
+                                        .when(ComparisonOperators.valueOf("_id").equalToValue("COMPLETED"))
+                                        .thenValueOf("count")
+                                        .otherwise(0))
+                                .as("inProgress")
+                        .sum(
+                                ConditionalOperators
+                                        .when(ComparisonOperators.valueOf("_id").equalToValue("IN_PROGRESS"))
+                                        .thenValueOf("count")
+                                        .otherwise(0))
+                                .as("completed")
+        );
+
+        AggregationResults<ProjectCounts> results = mongoTemplate.aggregate(aggregation, "project",
+                ProjectCounts.class);
+
+        return results.getMappedResults().get(0);
+    }
+
+    @Override
     public List<Requirement> getRequirements(ObjectId projectId) {
-        Query query = new Query(Criteria.where("projectId").is(projectId));
+        Query query = new Query(where("projectId").is(projectId));
         return mongoOperations.find(query, Requirement.class);
     }
 
@@ -47,7 +82,7 @@ public class ProjectRepositoryImpl implements ProjectRepository{
 
     @Override
     public void deleteRequirement(ObjectId requirementId) {
-        Query query = new Query(Criteria.where("_id").is(requirementId));
+        Query query = new Query(where("_id").is(requirementId));
         mongoOperations.remove(query, Requirement.class);
     }
 

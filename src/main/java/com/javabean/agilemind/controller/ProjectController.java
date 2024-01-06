@@ -1,6 +1,7 @@
 package com.javabean.agilemind.controller;
 
 import com.javabean.agilemind.domain.*;
+import com.javabean.agilemind.dto.ProjectCounts;
 import com.javabean.agilemind.exceptions.InvalidRequirementsException;
 import com.javabean.agilemind.exceptions.AccessDeniedException;
 import com.javabean.agilemind.security.CustomUserDetails;
@@ -33,8 +34,10 @@ public class ProjectController {
         return projectService.saveProject(project, getUserObjectId(principal));
     }
 
-    private static ObjectId getUserObjectId(OAuth2User principal) {
-        return ((CustomUserDetails) principal).getId();
+    @GetMapping(path = "projectCounts", produces = "application/json")
+    public ProjectCounts getProjectCounts(@AuthenticationPrincipal OAuth2User principal) {
+        ProjectCounts projectCounts = projectService.getProjectCounts(getUserObjectId(principal));
+        return projectCounts;
     }
 
     @GetMapping("{projectId}/requirements")
@@ -56,6 +59,10 @@ public class ProjectController {
     public List<UserStory> generateUserStoriesFromRequirements(@PathVariable String projectId, @AuthenticationPrincipal OAuth2User principal) throws AccessDeniedException, InvalidRequirementsException {
         List<UserStory> userStories =  projectService.generateUserStoriesFromRequirements(new ObjectId(projectId), getUserObjectId(principal));
         return userStories;
+    }
+
+    private static ObjectId getUserObjectId(OAuth2User principal) {
+        return ((CustomUserDetails) principal).getId();
     }
 
 }

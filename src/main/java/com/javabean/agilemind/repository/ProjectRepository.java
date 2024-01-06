@@ -2,6 +2,7 @@ package com.javabean.agilemind.repository;
 
 import com.javabean.agilemind.domain.Project;
 import com.javabean.agilemind.domain.Requirement;
+import com.javabean.agilemind.dto.ProjectCounts;
 import org.bson.types.ObjectId;
 
 import java.util.List;
@@ -15,9 +16,12 @@ public interface ProjectRepository {
 
     Project getProject(ObjectId projectId);
 
+    ProjectCounts getProjectCounts(ObjectId userId);
+
     Requirement saveRequirement(Requirement requirement);
 
     Requirement getRequirement(ObjectId requirementId);
 
     void deleteRequirement(ObjectId requirementId);
+
 }

@@ -3,6 +3,7 @@ package com.javabean.agilemind.service;
 import com.javabean.agilemind.domain.Project;
 import com.javabean.agilemind.domain.Requirement;
 import com.javabean.agilemind.domain.UserStory;
+import com.javabean.agilemind.dto.ProjectCounts;
 import com.javabean.agilemind.exceptions.InvalidRequirementsException;
 import com.javabean.agilemind.exceptions.AccessDeniedException;
 import com.javabean.agilemind.repository.ProjectRepository;
@@ -31,6 +32,12 @@ public class ProjectServiceImpl implements  ProjectService {
     public Project saveProject(Project project, ObjectId userId) {
         project.setOwnerId(userId);
         return projectRepository.saveProject(project);
+    }
+
+    @Override
+    public ProjectCounts getProjectCounts(ObjectId userId) {
+        ProjectCounts count = this.projectRepository.getProjectCounts(userId);
+        return count;
     }
 
     @Override
