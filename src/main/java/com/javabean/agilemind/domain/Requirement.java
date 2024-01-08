@@ -15,6 +15,8 @@ public class Requirement {
     private ObjectId id;
 
     private String content;
+    @JsonSerialize(using= ToStringSerializer.class)
     private ObjectId userId;
+    @JsonSerialize(using= ToStringSerializer.class)
     private ObjectId projectId;
 }

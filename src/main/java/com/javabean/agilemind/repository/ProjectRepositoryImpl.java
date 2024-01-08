@@ -3,6 +3,7 @@ package com.javabean.agilemind.repository;
 import com.javabean.agilemind.domain.Project;
 import com.javabean.agilemind.domain.ProjectStatus;
 import com.javabean.agilemind.domain.Requirement;
+import com.javabean.agilemind.domain.Task;
 import com.javabean.agilemind.dto.ProjectCounts;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -11,6 +12,7 @@ import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
@@ -19,11 +21,9 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 @Repository
 public class ProjectRepositoryImpl implements ProjectRepository{
     private MongoOperations mongoOperations;
-    private MongoTemplate mongoTemplate;
 
-    public ProjectRepositoryImpl(MongoOperations mongoOperations, MongoTemplate mongoTemplate) {
+    public ProjectRepositoryImpl(MongoOperations mongoOperations) {
         this.mongoOperations = mongoOperations;
-        this.mongoTemplate = mongoTemplate;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class ProjectRepositoryImpl implements ProjectRepository{
                                 .as("completed")
         );
 
-        AggregationResults<ProjectCounts> results = mongoTemplate.aggregate(aggregation, "project",
+        AggregationResults<ProjectCounts> results = mongoOperations.aggregate(aggregation, "project",
                 ProjectCounts.class);
 
         return results.getMappedResults().get(0);

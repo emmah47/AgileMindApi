@@ -7,6 +7,8 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
+
 @Data
 @Document("task")
 public class Task {
@@ -14,7 +16,15 @@ public class Task {
     @JsonSerialize(using= ToStringSerializer.class)
     private ObjectId id;
 
+    @JsonSerialize(using= ToStringSerializer.class)
+    private ObjectId projectId;
+    @JsonSerialize(using= ToStringSerializer.class)
     private ObjectId userStoryId;
+    @JsonSerialize(using= ToStringSerializer.class)
+    private ObjectId assignedUserId;
+
     private String content;
     private Boolean completed;
+    private Date startDate;
+    private Date dueDate;
 }

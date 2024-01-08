@@ -20,7 +20,9 @@ public class Project {
     private String name;
     private String description;
     private ProjectStatus status;
+    @JsonSerialize(using= ToStringSerializer.class)
     private ObjectId ownerId;
+    @JsonSerialize(using= ToStringSerializer.class)
     private List<ObjectId> collaboratorIds;
 
     private Date creationDate;
