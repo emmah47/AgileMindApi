@@ -1,6 +1,8 @@
 package com.javabean.agilemind.controller;
 
 import com.javabean.agilemind.domain.*;
+import com.javabean.agilemind.dto.ProjectCounts;
+import com.javabean.agilemind.dto.UpcomingTask;
 import com.javabean.agilemind.exceptions.InvalidRequirementsException;
 import com.javabean.agilemind.exceptions.AccessDeniedException;
 import com.javabean.agilemind.security.CustomUserDetails;
@@ -10,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -33,8 +36,16 @@ public class ProjectController {
         return projectService.saveProject(project, getUserObjectId(principal));
     }
 
-    private static ObjectId getUserObjectId(OAuth2User principal) {
-        return ((CustomUserDetails) principal).getId();
+    @GetMapping(path = "counts", produces = "application/json")
+    public ProjectCounts getProjectCounts(@AuthenticationPrincipal OAuth2User principal) {
+        ProjectCounts projectCounts = projectService.getProjectCounts(getUserObjectId(principal));
+        return projectCounts;
+    }
+
+    @GetMapping(path = "upcoming-tasks", produces = "application/json")
+    public List<UpcomingTask> getUpcomingTasks(@AuthenticationPrincipal OAuth2User principal, @RequestParam int daysUntilDue) {
+        List<UpcomingTask> upcomingTasks = projectService.getUpcomingTasks(getUserObjectId(principal), daysUntilDue);
+        return upcomingTasks;
     }
 
     @GetMapping("{projectId}/requirements")
@@ -56,6 +67,10 @@ public class ProjectController {
     public List<UserStory> generateUserStoriesFromRequirements(@PathVariable String projectId, @AuthenticationPrincipal OAuth2User principal) throws AccessDeniedException, InvalidRequirementsException {
         List<UserStory> userStories =  projectService.generateUserStoriesFromRequirements(new ObjectId(projectId), getUserObjectId(principal));
         return userStories;
+    }
+
+    private static ObjectId getUserObjectId(OAuth2User principal) {
+        return ((CustomUserDetails) principal).getId();
     }
 
 }
