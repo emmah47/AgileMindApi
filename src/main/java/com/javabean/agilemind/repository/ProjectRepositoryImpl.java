@@ -28,7 +28,7 @@ public class ProjectRepositoryImpl implements ProjectRepository{
 
     @Override
     public List<Project> getProjects(ObjectId userId) {
-        Query query = new Query(where("owner").is(userId));
+        Query query = new Query(where("ownerId").is(userId));
         return mongoOperations.find(query, Project.class);
     }
 

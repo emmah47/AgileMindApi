@@ -48,6 +48,11 @@ public class ProjectController {
         return upcomingTasks;
     }
 
+    @GetMapping("{projectId}")
+    public Project getProjectById(@PathVariable String projectId,  @AuthenticationPrincipal OAuth2User principal) throws AccessDeniedException {
+        return projectService.getProjectById(projectId, getUserObjectId(principal));
+    }
+
     @GetMapping("{projectId}/requirements")
     public List<Requirement> getRequirements(@PathVariable String projectId) {
         return projectService.getRequirements(new ObjectId(projectId));

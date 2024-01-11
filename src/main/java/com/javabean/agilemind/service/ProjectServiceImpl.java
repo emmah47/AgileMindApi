@@ -51,6 +51,13 @@ public class ProjectServiceImpl implements  ProjectService {
     }
 
     @Override
+    public Project getProjectById(String projectId, ObjectId userId) throws AccessDeniedException {
+        ObjectId projectIdObj = new ObjectId(projectId);
+        checkPermission(userId, projectIdObj);
+        return projectRepository.getProject(projectIdObj);
+    }
+
+    @Override
     public List<UpcomingTask> getUpcomingTasks(ObjectId userId, int daysUntilDue) {
         Date latestDueDate = Date.from(Instant.now().plus(Duration.ofDays(daysUntilDue)));
         List<Task> recentTasks = taskRepository.getRecentTasks(userId, latestDueDate);

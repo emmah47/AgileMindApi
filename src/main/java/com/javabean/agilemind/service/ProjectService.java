@@ -19,6 +19,8 @@ public interface ProjectService {
 
     ProjectCounts getProjectCounts(ObjectId userId);
 
+    Project getProjectById(String projectId, ObjectId userId) throws AccessDeniedException;
+
     List<UpcomingTask> getUpcomingTasks(ObjectId userId, int daysUntilDue);
 
     List<Requirement> getRequirements(ObjectId projectId);
