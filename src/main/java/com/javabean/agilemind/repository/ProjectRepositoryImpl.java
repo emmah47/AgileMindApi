@@ -45,7 +45,7 @@ public class ProjectRepositoryImpl implements ProjectRepository{
     @Override
     public ProjectCounts getProjectCounts(ObjectId userId) {
         TypedAggregation<Project> aggregation = newAggregation(Project.class,
-                match(where("owner").is(userId)),
+                match(where("ownerId").is(userId)),
                 group("status").count().as("count"),
                 group()
                   .sum("count").as("total")
