@@ -41,6 +41,8 @@ public class ProjectServiceImpl implements  ProjectService {
     @Override
     public Project saveProject(Project project, ObjectId userId) {
         project.setOwnerId(userId);
+        project.setCreationDate(Date.from(Instant.now()));
+        project.setLastOpenedDate(Date.from(Instant.now()));
         return projectRepository.saveProject(project);
     }
 
