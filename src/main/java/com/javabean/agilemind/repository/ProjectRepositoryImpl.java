@@ -54,13 +54,13 @@ public class ProjectRepositoryImpl implements ProjectRepository{
                                         .when(ComparisonOperators.valueOf("_id").equalToValue("COMPLETED"))
                                         .thenValueOf("count")
                                         .otherwise(0))
-                                .as("inProgress")
+                                .as("completed")
                         .sum(
                                 ConditionalOperators
                                         .when(ComparisonOperators.valueOf("_id").equalToValue("IN_PROGRESS"))
                                         .thenValueOf("count")
                                         .otherwise(0))
-                                .as("completed")
+                                .as("inProgress")
         );
 
         AggregationResults<ProjectCounts> results = mongoOperations.aggregate(aggregation, "project",
